@@ -8,16 +8,28 @@
   <body>
     {% comment %} {{ question }} {% endcomment %}
 
-    <h1>{{ question.question_text }}</h1>
-    <ul>
-      {% for choice in question.choice_set.all %}
+    {% comment %} <h1>{{ question.question_text }}</h1> {% endcomment %}
+    {% comment %} <ul> {% endcomment %}
+      {% comment %} {% for choice in question.choice_set.all %} {% endcomment %}
         {% comment %} <li>{{ choice.choice_text }}</li> {% endcomment %}
         {% comment %} <li><a href="/polls/{{ question.id }}/">{{ question.question_text }}</a></li> {% endcomment %}
         {% comment %} <li><a href="{% url 'detail' question.id %}">{{ question.question_text }}</a></li> {% endcomment %}
         {% comment %} <li><a href="{% url 'detail' question.id %}">{{ question.question_text }}</a></li> {% endcomment %}
-        <li><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></li>
+        {% comment %} <li><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></li> {% endcomment %}
+      {% comment %} {% endfor %} {% endcomment %}
+    {% comment %} </ul> {% endcomment %}
 
-      {% endfor %}
-    </ul>
+    <form action="{% url 'polls:vote' question.id %}" method="post">
+      {% csrf_token %}
+      <fieldset>
+          <legend><h1>{{ question.question_text }}</h1></legend>
+          {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+          {% for choice in question.choice_set.all %}
+              <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
+              <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br>
+          {% endfor %}
+      </fieldset>
+      <input type="submit" value="Vote">
+      </form>
   </body>
 </html>
